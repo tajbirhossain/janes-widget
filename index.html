@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
+    <title>JH Apartments Buchung</title>
+    <style>
+        :root {
+            --primary-color: #FF385C;
+            --secondary-color: #113B7A;
+            --text-color: #222222;
+            --light-text-color: #717171;
+            --border-color: #DDDDDD;
+            --background-color: #F7F7F7;
+            --card-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            --hover-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Circular', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .subheading {
+            font-size: 18px;
+            color: var(--light-text-color);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        /* @media (min-width: 992px) {
+            .main-content {
+                grid-template-columns: 2fr 1fr;
+            }
+        } */
+
+        .apartment-selector {
+            background-color: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .booking-widget {
+            background-color: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            position: sticky;
+            top: 40px;
+        }
+
+        .widget-header {
+            margin-bottom: 24px;
+        }
+
+        .price-display {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .price-display .currency {
+            font-weight: 400;
+        }
+
+        .price-display .per-night {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--light-text-color);
+        }
+
+        .star-rating {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--light-text-color);
+        }
+
+        .star-rating .star {
+            color: var(--primary-color);
+            margin-right: 4px;
+        }
+
+        .booking-form {
+            margin-top: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .date-picker-container {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .date-row {
+            display: flex;
+        }
+
+        .date-input {
+            flex: 1;
+            padding: 16px;
+            position: relative;
+        }
+
+        .date-input:first-child {
+            border-right: 1px solid var(--border-color);
+        }
+
+        .date-label {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            color: var(--text-color);
+        }
+
+        .date-input input {
+            width: 100%;
+            border: none;
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-color);
+            background: transparent;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .date-input input::placeholder {
+            color: var(--light-text-color);
+        }
+
+        .select-container {
+            position: relative;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .select-label {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            padding: 16px 16px 0;
+            color: var(--text-color);
+        }
+
+        select,
+        input[type="number"],
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 8px 16px 16px;
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-color);
+            border: none;
+            background: transparent;
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23222222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .personal-info-container {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .total-price {
+            font-size: 16px;
+            font-weight: 400;
+            text-align: right;
+            padding: 16px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .total-price .total-label {
+            font-weight: 600;
+        }
+
+        .total-price .price-value {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .book-button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #E61E4D, #D70466);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .book-button:hover {
+            transform: scale(1.01);
+        }
+
+        .book-button:disabled {
+            background: #dddddd;
+            cursor: not-allowed;
+        }
+
+        .price-breakdown {
+            margin-top: 20px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        /* Flatpickr customizations */
+        .flatpickr-calendar {
+            box-shadow: var(--hover-shadow) !important;
+            border-radius: 16px !important;
+            padding: 16px !important;
+            width: 330px !important;
+            border: none !important;
+        }
+
+        .flatpickr-day {
+            margin: 5px 2px !important;
+            height: 40px !important;
+            line-height: 40px !important;
+            border-radius: 50% !important;
+        }
+
+        .flatpickr-day.selected {
+            background: var(--text-color) !important;
+            border-color: var(--text-color) !important;
+        }
+
+        .flatpickr-day.flatpickr-disabled {
+            color: #ddd !important;
+            text-decoration: line-through;
+        }
+
+        .flatpickr-day.inRange {
+            background: var(--background-color) !important;
+            box-shadow: none !important;
+        }
+
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange {
+            background: var(--text-color) !important;
+            border-color: var(--text-color) !important;
+        }
+
+        .flatpickr-day.startRange {
+            border-radius: 50% 0 0 50% !important;
+        }
+
+        .flatpickr-day.endRange {
+            border-radius: 0 50% 50% 0 !important;
+        }
+
+        .flatpickr-months {
+            margin-bottom: 8px !important;
+        }
+
+        .flatpickr-current-month {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+        }
+
+
+        .apartment-card {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .apartment-card:hover {
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-2px);
+        }
+
+        .apartment-card.selected {
+            border: 2px solid var(--primary-color);
+        }
+
+        .apartment-image {
+            height: 200px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .apartment-details {
+            padding: 16px;
+        }
+
+        .apartment-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .apartment-location {
+            color: var(--light-text-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .apartment-features {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            background-color: var(--background-color);
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .success-message {
+            background-color: #D4EDDA;
+            color: #155724;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background-color: #F8D7DA;
+            color: #721C24;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>JH Apartments</h1>
+            <div class="subheading">Buchen Sie Ihren traumhaften Aufenthalt</div>
+        </header>
+
+        <div class="main-content">
+            <div class="apartment-selector">
+                <h2>Verfügbare Unterkünfte</h2>
+                <div id="apartmentCards"></div>
+            </div>
+
+            <div class="booking-widget">
+                <div class="widget-header">
+                    <div class="price-display"><span id="basePrice">€ --</span> <span class="per-night">pro Nacht</span>
+                    </div>
+                    <div class="star-rating">
+                        <span class="star">★</span> 4.9 · <span id="reviewCount">12 Bewertungen</span>
+                    </div>
+                </div>
+
+                <div class="booking-form">
+                    <div class="success-message" id="successMessage">
+                        Buchung erfolgreich! Eine Bestätigung wurde an Ihre E-Mail gesendet.
+                    </div>
+
+                    <div class="error-message" id="errorMessage"></div>
+
+                    <div class="select-container">
+                        <label class="select-label">Unterkunft</label>
+                        <select id="apartmentSelect">
+                            <option value="">Unterkunft auswählen...</option>
+                        </select>
+                    </div>
+
+                    <div class="date-picker-container">
+                        <div class="date-row">
+                            <div class="date-input">
+                                <label class="date-label">Anreise</label>
+                                <input type="text" id="startDate" placeholder="Datum hinzufügen" readonly>
+                            </div>
+                            <div class="date-input">
+                                <label class="date-label">Abreise</label>
+                                <input type="text" id="endDate" placeholder="Datum hinzufügen" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="select-container">
+                        <label class="select-label">Gäste</label>
+                        <input type="number" id="guests" min="1" value="1">
+                    </div>
+
+                    <div id="priceBreakdown" class="price-breakdown" style="display: none;">
+                        <div class="price-row">
+                            <div><span id="nightlyRate">€ --</span> x <span id="nightCount">0</span> Nächte</div>
+                            <div id="subtotal">€ --</div>
+                        </div>
+                        <div class="price-row">
+                            <div>Reinigungsgebühr</div>
+                            <div id="cleaningFee">€ 35</div>
+                        </div>
+                        <div class="price-row">
+                            <div>Servicegebühr</div>
+                            <div id="serviceFee">€ --</div>
+                        </div>
+                        <div class="total-price">
+                            <div class="total-label">Gesamtsumme</div>
+                            <div class="price-value" id="totalPrice">€ --</div>
+                        </div>
+                    </div>
+
+                    <div class="personal-info-container">
+                        <h3 style="margin-bottom: 16px;">Persönliche Informationen</h3>
+                        <div class="input-group">
+                            <label class="input-label">Vorname</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Nachname</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">E-Mail</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Telefonnummer</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                    </div>
+
+                    <button id="bookingButton" class="book-button" onclick="submitBooking()">Jetzt buchen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // https://login.smoobu.com/en/login
+        // harmsjannes.bnb@gmail.com
+        // Allthewayup25!
+        // YSORbwlPHwzAULw0nRcqCFBC96mIujcDzv64378mP1
+        // UdqeLSQGxw4f5L1lYfClkzN22ctlDKwAh0ne6keBqb
+        const currentLang = document.documentElement.lang.slice(0, 2) || "de";
+        const PROXY_URL = "https://jh-apartment-backend-6atm.vercel.app/api/proxy";
+        let selectedStartDate = null;
+        let selectedEndDate = null;
+        let availableDates = new Set();
+        let unavailableDates = new Set();
+        let startPicker, endPicker;
+        let apartmentData = [];
+
+
+        async function fetchApartments() {
+            try {
+                const response = await fetch(`${PROXY_URL}/apartments`);
+                const data = await response.json();
+                console.log("Apartments-Daten:", data);
+
+                const apartmentSelect = document.getElementById("apartmentSelect");
+                apartmentSelect.innerHTML = '<option value="">Unterkunft auswählen...</option>';
+
+                const apartmentCardsContainer = document.getElementById("apartmentCards");
+                apartmentCardsContainer.innerHTML = '';
+
+                if (data.apartments && Array.isArray(data.apartments)) {
+                    apartmentData = data.apartments;
+
+                    data.apartments.forEach(apartment => {
+                        const option = document.createElement("option");
+                        option.value = apartment.id;
+                        option.textContent = apartment.name;
+                        apartmentSelect.appendChild(option);
+
+                        const card = document.createElement("div");
+                        card.className = "apartment-card";
+                        card.dataset.id = apartment.id;
+
+                        const imageUrl = apartment.picture ? apartment.picture : "/api/placeholder/400/200";
+
+                        card.innerHTML = `
+                            <div class="apartment-image" style="background-image: url('${imageUrl}')"></div>
+                            <div class="apartment-details">
+                                <div class="apartment-name">${apartment.name}</div>
+                                <div class="apartment-location">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    ${apartment.location || 'Location information not available'}
+                                </div>
+                                <div>Bis zu ${apartment.maxPersons} Gäste</div>
+                                <div class="apartment-features">
+                                    ${apartment.bedrooms ? `<span class="feature-tag">${apartment.bedrooms} Schlafzimmer</span>` : ''}
+                                    ${apartment.bathrooms ? `<span class="feature-tag">${apartment.bathrooms} Badezimmer</span>` : ''}
+                                    ${apartment.size ? `<span class="feature-tag">${apartment.size} m²</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+
+                        card.addEventListener('click', () => {
+                            document.querySelectorAll('.apartment-card').forEach(c => {
+                                c.classList.remove('selected');
+                            });
+
+                            card.classList.add('selected');
+
+                            apartmentSelect.value = apartment.id;
+
+                            if (apartment.basePrice) {
+                                document.getElementById('basePrice').textContent = `€ ${(apartment.basePrice / 100).toFixed(2)}`;
+                                document.getElementById('nightlyRate').textContent = `€ ${(apartment.basePrice / 100).toFixed(2)}`;
+                            }
+
+                            checkAvailability();
+                        });
+
+                        apartmentCardsContainer.appendChild(card);
+                    });
+                } else {
+                    console.error("Keine Unterkünfte gefunden:", data);
+                    showErrorMessage("Keine Unterkünfte verfügbar. Bitte überprüfen Sie die API-Verbindung.");
+                }
+            } catch (error) {
+                console.error("Fehler beim Abrufen der Unterkünfte:", error);
+                showErrorMessage("Fehler beim Abrufen der Unterkünfte: " + error.message);
+            }
+        }
+
+        function initFlatpickr() {
+            const startEl = document.getElementById("startDate");
+            const endEl = document.getElementById("endDate");
+
+            if (!startEl || !endEl) {
+                return setTimeout(initFlatpickr, 100);
+            }
+
+            const disabledRanges = Array.from(unavailableDates).map(d => ({
+                from: d, to: d
+            }));
+
+            startPicker = flatpickr(startEl, {
+                locale: currentLang === "de" ? "de" : "en",
+                minDate: "today",
+                disable: disabledRanges,
+                onChange: ([sel]) => {
+                    if (sel) {
+                        selectedStartDate = sel.toISOString().split("T")[0];
+                        endPicker.set("minDate", sel);
+
+                        if (selectedEndDate && new Date(selectedEndDate) <= sel) {
+                            endPicker.clear();
+                            selectedEndDate = null;
+                        }
+
+                        if (selectedEndDate) calculatePrice();
+                    }
+                }
+            });
+
+            endPicker = flatpickr(endEl, {
+                locale: currentLang === "de" ? "de" : "en",
+                minDate: selectedStartDate || "today",
+                disable: disabledRanges,
+                onChange: ([sel]) => {
+                    if (sel) {
+                        selectedEndDate = sel.toISOString().split("T")[0];
+                        calculatePrice();
+                    }
+                }
+            });
+        }
+
+        async function checkAvailability() {
+            const apartmentId = document.getElementById("apartmentSelect").value;
+            if (!apartmentId) {
+                return;
+            }
+
+            document.getElementById("bookingButton").disabled = true;
+            document.getElementById("bookingButton").textContent = "Verfügbarkeit wird geprüft...";
+
+            const today = new Date();
+            const startDate = today.toISOString().split("T")[0];
+            const threeMonthsLater = new Date(today.getFullYear(), today.getMonth() + 3, 0);
+            const endDate = threeMonthsLater.toISOString().split("T")[0];
+            console.log(JSON.stringify({
+                arrivalDate: "2025-05-14",
+                departureDate: "2025-05-15",
+                apartments: [2514433, 2313558],
+                guests: parseInt(document.getElementById("guests").value),
+                customerId: 981908,
+            }));
+
+
+            try {
+                const response = await fetch(`${PROXY_URL}/check-availability`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        arrivalDate: "2025-05-20",
+                        departureDate: "2025-05-22",
+                        apartments: [2514433, 2313558],
+                        guests: parseInt(2),
+                        customerId: 981908,
+                    })
+                });
+                const data = await response.json();
+                console.log("Verfügbarkeits-Daten:", data);
+
+                availableDates.clear();
+                unavailableDates.clear();
+
+                if (data.availableDates && Array.isArray(data.availableDates)) {
+                    data.availableDates.forEach(date => availableDates.add(date));
+                }
+
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                    const dateString = d.toISOString().split("T")[0];
+                    if (!availableDates.has(dateString)) {
+                        unavailableDates.add(dateString);
+                    }
+                }
+
+                const disabledDates = Array.from(unavailableDates);
+
+                if (startPicker && endPicker) {
+                    startPicker.set("disable", disabledDates);
+                    endPicker.set("disable", disabledDates);
+
+                    if (disabledDates.includes(selectedStartDate)) {
+                        startPicker.clear();
+                        selectedStartDate = null;
+                    }
+
+                    if (disabledDates.includes(selectedEndDate)) {
+                        endPicker.clear();
+                        selectedEndDate = null;
+                    }
+                } else {
+                    initFlatpickr();
+                }
+
+                document.getElementById("bookingButton").disabled = false;
+                document.getElementById("bookingButton").textContent = "Jetzt buchen";
+
+                const apartment = apartmentData.find(a => a.id == apartmentId);
+                if (apartment && apartment.basePrice) {
+                    document.getElementById('basePrice').textContent = `€ ${(apartment.basePrice / 100).toFixed(2)}`;
+                    document.getElementById('nightlyRate').textContent = `€ ${(apartment.basePrice / 100).toFixed(2)}`;
+                }
+
+            } catch (error) {
+                console.error("Fehler beim Prüfen der Verfügbarkeit:", error);
+                showErrorMessage("Fehler beim Prüfen der Verfügbarkeit: " + error.message);
+                document.getElementById("bookingButton").disabled = false;
+                document.getElementById("bookingButton").textContent = "Jetzt buchen";
+            }
+        }
+
+        async function calculatePrice() {
+            const apartmentId = document.getElementById("apartmentSelect").value;
+            const guests = parseInt(document.getElementById("guests").value);
+
+            if (!apartmentId || !selectedStartDate || !selectedEndDate) {
+                return;
+            }
+
+            document.getElementById("totalPrice").textContent = "Wird berechnet...";
+            document.getElementById("priceBreakdown").style.display = "block";
+
+            try {
+                const response = await fetch(`${PROXY_URL}/check-availability`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        arrivalDate: selectedStartDate,
+                        departureDate: selectedEndDate,
+                        apartments: [parseInt(apartmentId)],
+                        guests: guests,
+                        customerId: 981908,
+                    })
+                });
+                const data = await response.json();
+                console.log("Preis-Daten:", data);
+
+                if (data.prices && data.prices[apartmentId]) {
+                    const priceData = data.prices[apartmentId];
+                    const priceValue = priceData.price / 100;
+                    const currency = priceData.currency || "€";
+
+
+                    const start = new Date(selectedStartDate);
+                    const end = new Date(selectedEndDate);
+                    const diffTime = Math.abs(end - start);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+
+                    const apartment = apartmentData.find(a => a.id == apartmentId);
+                    const nightlyRate = apartment ? apartment.basePrice / 100 : 0;
+
+
+                    document.getElementById("nightCount").textContent = diffDays;
+                    document.getElementById("subtotal").textContent = `${currency} ${(nightlyRate * diffDays).toFixed(2)}`;
+
+
+                    const serviceFee = Math.round((nightlyRate * diffDays) * 0.12);
+                    document.getElementById("serviceFee").textContent = `${currency} ${serviceFee.toFixed(2)}`;
+
+
+                    document.getElementById("totalPrice").textContent = `${currency} ${priceValue.toFixed(2)}`;
+                    document.getElementById("priceBreakdown").style.display = "block";
+                } else {
+                    document.getElementById("totalPrice").textContent = "Preis nicht verfügbar";
+                }
+            } catch (error) {
+                console.error("Fehler beim Berechnen des Preises:", error);
+                document.getElementById("totalPrice").textContent = "Fehler";
+                showErrorMessage("Fehler beim Abrufen des Preises: " + error.message);
+            }
+        }
+
+        async function submitBooking() {
+            const apartmentId = document.getElementById("apartmentSelect").value;
+            const firstName = document.getElementById("firstName").value;
+            const lastName = document.getElementById("lastName").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const guests = parseInt(document.getElementById("guests").value);
+
+
+            if (!apartmentId || !selectedStartDate || !selectedEndDate || !firstName || !lastName || !email || !phone) {
+                showErrorMessage("Bitte füllen Sie alle Felder aus.");
+                return;
+            }
+
+
+            document.getElementById("bookingButton").disabled = true;
+            document.getElementById("bookingButton").textContent = "Buchung wird verarbeitet...";
+
+
+            document.getElementById("errorMessage").style.display = "none";
+            document.getElementById("successMessage").style.display = "none";
+
+            const bookingPayload = {
+                arrivalDate: selectedStartDate,
+                departureDate: selectedEndDate,
+                channelId: 70,
+                apartmentId: parseInt(apartmentId),
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                phone: phone,
+                adults: guests,
+                children: 0
+            };
+
+            try {
+                const response = await fetch(`${PROXY_URL}/reservations`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(bookingPayload)
+                });
+
+                const data = await response.json();
+                console.log("Buchungs-Daten:", data);
+
+                if (data.id) {
+                    document.getElementById("successMessage").style.display = "block";
+                    resetForm();
+                } else {
+                    showErrorMessage("Fehler bei der Buchung: " + (data.message || JSON.stringify(data)));
+                }
+            } catch (error) {
+                console.error("Fehler beim Absenden der Buchung:", error);
+                showErrorMessage("Fehler beim Absenden der Buchung: " + error.message);
+            } finally {
+                document.getElementById("bookingButton").disabled = false;
+                document.getElementById("bookingButton").textContent = "Jetzt buchen";
+            }
+        }
+
+        function resetForm() {
+            selectedStartDate = null;
+            selectedEndDate = null;
+            startPicker.clear();
+            endPicker.clear();
+            document.getElementById("guests").value = "1";
+            document.getElementById("firstName").value = "";
+            document.getElementById("lastName").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("phone").value = "";
+            document.getElementById("priceBreakdown").style.display = "none";
+            document.querySelectorAll('.apartment-card').forEach(c => c.classList.remove('selected'));
+        }
+
+        function showErrorMessage(message) {
+            const errorElement = document.getElementById("errorMessage");
+            errorElement.textContent = message;
+            errorElement.style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function init() {
+            await fetchApartments();
+            initFlatpickr();
+
+            document.getElementById("apartmentSelect").addEventListener("change", checkAvailability);
+            document.getElementById("guests").addEventListener("change", () => {
+                if (selectedStartDate && selectedEndDate) calculatePrice();
+                else checkAvailability();
+            });
+
+
+            document.getElementById("priceBreakdown").style.display = "none";
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
